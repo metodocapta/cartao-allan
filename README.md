@@ -3,7 +3,7 @@
 Cartão de visita digital, autocontido, para publicação no GitHub Pages.
 
 ## URL de publicação
-`https://drallan2026.github.io/cartao-allan/`
+`https://metodocapta.github.io/cartao-allan/`
 
 ## Conteúdo
 - `index.html` — o cartão (CSS/SVG inline; sem dependências além da fonte Inter via Google Fonts).
@@ -29,7 +29,7 @@ git init
 git add .
 git commit -m "Cartao virtual Allan Marcio"
 git branch -M main
-git remote add origin https://github.com/drallan2026/cartao-allan.git
+git remote add origin https://github.com/metodocapta/cartao-allan.git
 git push -u origin main
 ```
 Depois: **Settings → Pages → Source: Deploy from a branch → `main` / `(root)`**.
