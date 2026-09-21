@@ -76,9 +76,9 @@ body{display:flex;justify-content:center;min-height:100dvh}
 .nome .c{font-size:17px;font-weight:800;letter-spacing:2px;color:#fff;margin-top:2px;text-shadow:0 3px 16px rgba(0,0,0,.9)}
 
 /* ---------- abas ---------- */
-.tabs{position:relative;z-index:3;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:2px;
+.tabs{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:2px;
   border-bottom:1px solid var(--line)}
-.tab{background:none;border:0;color:var(--muted);font-family:inherit;font-size:10.5px;font-weight:700;letter-spacing:.09em;
+.tab{background:none;border:0;color:var(--muted);font-family:inherit;font-size:9.5px;font-weight:700;letter-spacing:.05em;
   text-transform:uppercase;cursor:pointer;padding:10px 2px 13px;display:flex;flex-direction:column;align-items:center;gap:9px;transition:color .2s,transform .18s}
 .tab .ic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1.6px solid var(--line);color:var(--teal2);transition:.22s}
 .tab .ic svg{width:20px;height:20px;fill:currentColor}
@@ -86,8 +86,12 @@ body{display:flex;justify-content:center;min-height:100dvh}
 .tab:active{transform:scale(.95)}
 .tab[aria-selected="true"]{color:var(--teal2)}
 .tab[aria-selected="true"] .ic{background:var(--teal);border-color:var(--teal);color:#02110f;box-shadow:0 0 22px rgba(25,211,197,.45)}
-.ind{position:absolute;bottom:-1px;left:0;height:2px;width:calc(100%/3);background:var(--teal);border-radius:2px;
+.ind{position:absolute;bottom:-1px;left:0;height:2px;width:25%;background:var(--teal);border-radius:2px;
   box-shadow:0 0 12px rgba(25,211,197,.7);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+/* quarta aba e um LINK (navega para a pagina do metodo) — mesmo visual das abas */
+a.tab-link{text-decoration:none}
+a.tab-link .ic{border-style:dashed}
+a.tab-link:hover .ic{border-style:solid;border-color:var(--teal);color:var(--teal)}
 
 /* ---------- paineis ---------- */
 .painel{position:relative;z-index:3;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
@@ -238,6 +242,10 @@ body{display:flex;justify-content:center;min-height:100dvh}
       <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.6-8 5.8V22h16v-2.2c0-3.2-3.6-5.8-8-5.8z"/></svg></span>
       Quem sou eu?
     </button>
+    <a class="tab tab-link" href="https://metodocapta.github.io/metodo-capta-plus/" target="_blank" rel="noopener">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2 3.6 21.4l8.4-3.2 8.4 3.2L12 2z"/></svg></span>
+      O que é Capta+
+    </a>
     <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false">
       <span class="ic"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.6 2.6 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.6 2.6 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8C22 15.2 22 12 22 12s0-3.2-.4-4.8zM10 15.2V8.8L15.5 12 10 15.2z"/></svg></span>
       Canal
@@ -319,7 +327,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
 
 <script>
 (function(){
-  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var tabs=[].slice.call(document.querySelectorAll('.tab[role="tab"]'));
   var paineis={t1:'p1',t2:'p2',t3:'p3'};
   var ind=document.querySelector('.ind');
   var toast=document.getElementById('toast');
@@ -332,7 +340,8 @@ body{display:flex;justify-content:center;min-height:100dvh}
       o.tabIndex=sel?0:-1;
       document.getElementById(paineis[o.id]).hidden=!sel;
     });
-    ind.style.transform='translateX('+(i*100)+'%)';
+    ind.style.width=tabs[i].offsetWidth+'px';
+    ind.style.transform='translateX('+tabs[i].offsetLeft+'px)';
     if(foco){tabs[i].focus();}
   }
   tabs.forEach(function(tb,i){
