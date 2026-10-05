@@ -13,7 +13,7 @@ Cartão de visita digital, autocontido, para publicação no GitHub Pages.
 
 ## Ativos (gerados por `SKILLS/SCRIPTS/cartao_build.py`)
 - `retrato.png` / `retrato.webp` — recorte do retrato com fundo transparente.
-- `og-cartao.png` — imagem 1200×630 para compartilhamento.
+- `og-cartao.jpg` — imagem 1200×630 (JPEG) para compartilhamento.
 - `favicon.png` — símbolo "C+" (gradiente da marca).
 - `contato.vcf` — vCard 3.0 (nome, cargo, telefone, e-mail, site e redes).
 
