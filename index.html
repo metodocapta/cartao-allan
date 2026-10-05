@@ -336,14 +336,15 @@ body{display:flex;justify-content:center;min-height:100dvh}
     </button>
   </div>
 
-  <a class="destaque rv" style="--d:.32s" href="https://canva.link/apresentacao-exposul-2026-catador" target="_blank" rel="noopener" aria-label="Abrir a apresentação ExpoSul 2026 Catadores">
-    <div class="cab"><span>Destaque</span><span>ExpoSul 2026</span></div>
+  <a class="destaque rv" id="mcDestaque" style="--d:.32s" href="https://minutocaptamais.substack.com" target="_blank" rel="noopener" aria-label="Última Estratégia de Captação do Método Capta+">
+    <div class="cab"><span>Destaque</span><span id="mcDestaqueData">Estratégia de Captação</span></div>
     <div class="corpo">
-      <h3>Quem recicla o <em>Brasil</em> precisa aprender a captar!!</h3>
-      <p>Apresentação do Método Capta+ para a rede de catadores — clique e assista.</p>
+      <div id="mcDestaqueImg" style="display:none;margin-bottom:12px;border-radius:12px;overflow:hidden"></div>
+      <h3 id="mcDestaqueTitulo">Últimos estudos e <em>newsletters</em></h3>
+      <p id="mcDestaqueResumo">A Estratégia de Captação mais recente do Método Capta+ — atualiza automaticamente com a home.</p>
       <span class="btn-destaque">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2z"/></svg>
-        Clique na apresentação
+        <span id="mcDestaqueBtn">Leia a Estratégia!</span>
       </span>
     </div>
   </a>
@@ -400,6 +401,25 @@ body{display:flex;justify-content:center;min-height:100dvh}
   }
   var mail=document.querySelector('a[href^="mailto:"]');
   if(mail){mail.addEventListener('click',function(){aviso('Abrindo seu e-mail…');});}
+
+  // DESTAQUE sincronizado com a home: le ../assets/destaques.json e mostra o ULTIMO card
+  (function(){
+    var el=document.getElementById('mcDestaque'); if(!el) return;
+    function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+    fetch('../assets/destaques.json',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){
+        var it=(d&&d.itens&&d.itens[0])||null; if(!it) return;
+        if(it.link){el.href=it.link;}
+        el.setAttribute('aria-label','Abrir: '+(it.titulo_estrategico||it.titulo||'Estratégia de Captação'));
+        var dt=document.getElementById('mcDestaqueData'); if(dt&&it.data_pt){dt.textContent=it.data_pt;}
+        var tt=document.getElementById('mcDestaqueTitulo'); if(tt&&it.titulo_estrategico){tt.innerHTML=esc(it.titulo_estrategico);}
+        var rs=document.getElementById('mcDestaqueResumo'); if(rs&&it.resumo){rs.textContent=it.resumo;}
+        var im=document.getElementById('mcDestaqueImg');
+        if(im&&it.imagem){im.innerHTML='<img src="'+esc(it.imagem)+'" alt="'+esc(it.titulo_estrategico||it.titulo||'')+'" loading="lazy" decoding="async" style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover">';im.style.display='block';}
+      })
+      .catch(function(){});
+  })();
 })();
 </script>
 </body>
