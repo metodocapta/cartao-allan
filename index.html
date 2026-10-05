@@ -82,7 +82,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
 .nome .c{font-size:17px;font-weight:800;letter-spacing:2px;color:#fff;margin-top:2px;text-shadow:0 3px 16px rgba(0,0,0,.9)}
 
 /* ---------- abas ---------- */
-.tabs{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:2px;
+.tabs{--gap:6px;position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);column-gap:var(--gap);margin-top:2px;
   border-bottom:1px solid var(--line)}
 .tab{background:none;border:0;color:var(--muted);font-family:inherit;font-size:9.5px;font-weight:700;letter-spacing:.05em;
   text-transform:uppercase;cursor:pointer;padding:10px 2px 13px;display:flex;flex-direction:column;align-items:center;gap:9px;transition:color .2s,transform .18s}
@@ -92,7 +92,9 @@ body{display:flex;justify-content:center;min-height:100dvh}
 .tab:active{transform:scale(.95)}
 .tab[aria-selected="true"]{color:var(--teal2)}
 .tab[aria-selected="true"] .ic{background:var(--teal);border-color:var(--teal);color:#02110f;box-shadow:0 0 22px rgba(25,211,197,.45)}
-.ind{position:absolute;bottom:-1px;left:0;height:2px;width:25%;background:var(--teal);border-radius:2px;
+.ind{position:absolute;bottom:-1px;left:0;height:2px;background:var(--teal);border-radius:2px;
+  width:calc((100% - 3*var(--gap))/4);
+  transform:translateX(calc(var(--i,0) * (100% + var(--gap))));
   box-shadow:0 0 12px rgba(25,211,197,.7);transition:transform .3s cubic-bezier(.4,0,.2,1)}
 
 /* ---------- paineis ---------- */
@@ -178,7 +180,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
   .rodape .marca{font-size:16px;}
   .rodape p{font-size:12px;}
   /* 3) abas: respiro com 4 colunas em telas estreitas */
-  .tabs{gap:3px;}
+  .tabs{--gap:3px;}
   .tab{font-size:9px;letter-spacing:.03em;padding:9px 1px 11px;}
   .tab .ic{width:38px;height:38px;}
   .tab .ic svg{width:18px;height:18px;}
@@ -345,7 +347,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
     </button>
   </div>
 
-  <a class="destaque rv" id="mcDestaque" style="--d:.32s" href="https://minutocaptamais.substack.com" target="_blank" rel="noopener" aria-label="Última Estratégia de Captação do Método Capta+">
+  <a class="destaque rv" id="mcDestaque" style="--d:.32s" href="https://minutocaptamais.substack.com" target="_blank" rel="noopener">
     <div class="cab"><span>Destaque</span><span id="mcDestaqueData">Estratégia de Captação</span></div>
     <div class="corpo">
       <div id="mcDestaqueImg" style="display:none;margin-bottom:12px;border-radius:12px;overflow:hidden"></div>
@@ -375,19 +377,15 @@ body{display:flex;justify-content:center;min-height:100dvh}
   var toast=document.getElementById('toast');
   var t;
   function aviso(msg){toast.textContent=msg;toast.classList.add('on');clearTimeout(t);t=setTimeout(function(){toast.classList.remove('on')},2200);}
-  var geo=[],atual=0;
-  function medir(){geo=tabs.map(function(o){return {w:o.offsetWidth,l:o.offsetLeft};});}
+  var barra=ind.parentNode;
   function seleciona(i,foco){
-    atual=i;
     tabs.forEach(function(o,j){
       var sel=i===j;
       o.setAttribute('aria-selected',sel?'true':'false');
       o.tabIndex=sel?0:-1;
       document.getElementById(paineis[o.id]).hidden=!sel;
     });
-    if(!geo[i]){medir();}
-    ind.style.width=geo[i].w+'px';
-    ind.style.transform='translateX('+geo[i].l+'px)';
+    barra.style.setProperty('--i',i);
     if(foco){tabs[i].focus();}
   }
   tabs.forEach(function(tb,i){
@@ -401,10 +399,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
       if(n!==null){e.preventDefault();seleciona(n,true);}
     });
   });
-  medir();
   seleciona(0,false);
-  window.addEventListener('resize',function(){medir();seleciona(atual,false);});
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){medir();seleciona(atual,false);});}
 
   var share=document.getElementById('btnCompartilhar');
   if(share){
@@ -427,7 +422,6 @@ body{display:flex;justify-content:center;min-height:100dvh}
       .then(function(d){
         var it=(d&&d.itens&&d.itens[0])||null; if(!it) return;
         if(it.link){el.href=it.link;}
-        el.setAttribute('aria-label','Abrir: '+(it.titulo_estrategico||it.titulo||'Estratégia de Captação'));
         var dt=document.getElementById('mcDestaqueData'); if(dt&&it.data_pt){dt.textContent=it.data_pt;}
         var tt=document.getElementById('mcDestaqueTitulo'); if(tt&&it.titulo_estrategico){tt.innerHTML=esc(it.titulo_estrategico);}
         var rs=document.getElementById('mcDestaqueResumo'); if(rs&&it.resumo){rs.textContent=it.resumo;}
