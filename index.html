@@ -14,10 +14,11 @@
 <meta property="og:image" content="https://metodocapta.github.io/cartao-allan/assets/og-cartao.png">
 <meta property="og:url" content="https://metodocapta.github.io/cartao-allan/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="dark">
+<link rel="preload" as="font" type="font/woff2" href="assets/inter-latin.woff2" crossorigin>
+<link rel="preload" as="image" href="assets/retrato.webp" type="image/webp" fetchpriority="high">
 <style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url('assets/inter-latin.woff2') format('woff2')}
 :root{
   --bg1:#041817; --bg2:#020d0d; --ink:#eff9f6; --muted:#a7bbb6;
   --teal:#19d3c5; --teal2:#70f0c5; --line:rgba(25,211,197,.28);
@@ -42,8 +43,8 @@ body{display:flex;justify-content:center;min-height:100dvh}
 .waves.bottom{bottom:0;top:auto;height:300px}
 
 /* ---------- entrada ---------- */
-.rv{opacity:0;transform:translateY(14px);animation:rv .62s cubic-bezier(.22,.61,.36,1) forwards;animation-delay:var(--d,0s)}
-@keyframes rv{to{opacity:1;transform:none}}
+.rv{transform:translateY(14px);animation:rv .55s cubic-bezier(.22,.61,.36,1) forwards;animation-delay:var(--d,0s)}
+@keyframes rv{to{transform:none}}
 
 /* ---------- sociais ---------- */
 .social{position:relative;z-index:3;display:flex;justify-content:center;gap:26px;padding:6px 0 2px}
@@ -143,9 +144,9 @@ body{display:flex;justify-content:center;min-height:100dvh}
   font-weight:800;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:14px 22px;border-radius:32px;
   box-shadow:0 10px 26px rgba(25,211,197,.32)}
 .btn-destaque svg{width:15px;height:15px;fill:currentColor}
-.destaque:hover .btn-destaque::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:shine .8s ease}
-@keyframes shine{to{left:120%}}
+.destaque:hover .btn-destaque::after{content:"";position:absolute;top:0;left:0;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-120%);animation:shine .8s ease}
+@keyframes shine{to{transform:translateX(320%)}}
 
 /* ---------- rodapé ---------- */
 .rodape{position:relative;z-index:3;padding:18px 0 14px;text-align:center;border-top:1px solid var(--line);margin-top:18px}
@@ -187,6 +188,12 @@ body{display:flex;justify-content:center;min-height:100dvh}
   .painel h2{font-size:19px;}
 }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"ProfilePage","@id":"https://metodocapta.github.io/cartao-allan/#page","url":"https://metodocapta.github.io/cartao-allan/","name":"Allan Márcio · CEO — Método Capta+","inLanguage":"pt-BR","about":{"@id":"https://metodocapta.github.io/cartao-allan/#person"},"mainEntity":{"@id":"https://metodocapta.github.io/cartao-allan/#person"}},
+{"@type":"Person","@id":"https://metodocapta.github.io/cartao-allan/#person","name":"Allan Márcio","jobTitle":"CEO","description":"Engenheiro de captação de recursos públicos e privados.","url":"https://metodocapta.github.io/cartao-allan/","image":"https://metodocapta.github.io/cartao-allan/assets/og-cartao.png","worksFor":{"@type":"Organization","name":"Método Capta+","url":"https://metodocapta.github.io/"},"sameAs":["https://www.instagram.com/drallancaptador/","https://www.facebook.com/ITMARIALVAPR","https://x.com/comassarandipr","https://www.youtube.com/@DrAllanProjeto","https://minutocaptamais.substack.com"],"email":"mailto:metodocaptamais@gmail.com","telephone":"+55-44-99912-0638"}
+]}
+</script>
 </head>
 <body>
 <main class="card">
@@ -249,10 +256,7 @@ body{display:flex;justify-content:center;min-height:100dvh}
       <h1>Método <span class="cap">Capta+</span></h1>
       <p>Gestão Inteligente para Captação Pública</p>
     </div>
-    <picture>
-      <source srcset="assets/retrato.webp" type="image/webp">
-      <img class="retrato" src="assets/retrato.png" alt="Allan Márcio, CEO" width="286" height="333">
-    </picture>
+    <img class="retrato" src="assets/retrato.webp" alt="Allan Márcio, CEO" width="480" height="558" fetchpriority="high" decoding="async">
     <div class="nome">
       <div class="n">Allan Márcio</div>
       <div class="c">CEO</div>
@@ -366,15 +370,19 @@ body{display:flex;justify-content:center;min-height:100dvh}
   var toast=document.getElementById('toast');
   var t;
   function aviso(msg){toast.textContent=msg;toast.classList.add('on');clearTimeout(t);t=setTimeout(function(){toast.classList.remove('on')},2200);}
+  var geo=[],atual=0;
+  function medir(){geo=tabs.map(function(o){return {w:o.offsetWidth,l:o.offsetLeft};});}
   function seleciona(i,foco){
+    atual=i;
     tabs.forEach(function(o,j){
       var sel=i===j;
       o.setAttribute('aria-selected',sel?'true':'false');
       o.tabIndex=sel?0:-1;
       document.getElementById(paineis[o.id]).hidden=!sel;
     });
-    ind.style.width=tabs[i].offsetWidth+'px';
-    ind.style.transform='translateX('+tabs[i].offsetLeft+'px)';
+    if(!geo[i]){medir();}
+    ind.style.width=geo[i].w+'px';
+    ind.style.transform='translateX('+geo[i].l+'px)';
     if(foco){tabs[i].focus();}
   }
   tabs.forEach(function(tb,i){
@@ -388,7 +396,10 @@ body{display:flex;justify-content:center;min-height:100dvh}
       if(n!==null){e.preventDefault();seleciona(n,true);}
     });
   });
+  medir();
   seleciona(0,false);
+  window.addEventListener('resize',function(){medir();seleciona(atual,false);});
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){medir();seleciona(atual,false);});}
 
   var share=document.getElementById('btnCompartilhar');
   if(share){
@@ -416,7 +427,13 @@ body{display:flex;justify-content:center;min-height:100dvh}
         var tt=document.getElementById('mcDestaqueTitulo'); if(tt&&it.titulo_estrategico){tt.innerHTML=esc(it.titulo_estrategico);}
         var rs=document.getElementById('mcDestaqueResumo'); if(rs&&it.resumo){rs.textContent=it.resumo;}
         var im=document.getElementById('mcDestaqueImg');
-        if(im&&it.imagem){im.innerHTML='<img src="'+esc(it.imagem)+'" alt="'+esc(it.titulo_estrategico||it.titulo||'')+'" loading="lazy" decoding="async" style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover">';im.style.display='block';}
+        if(im&&it.imagem){
+          var isrc=String(it.imagem).replace(/w_\d+/, 'w_560').replace(/q_auto:[a-z]+/, 'q_auto:eco');
+          im.innerHTML='<img src="'+esc(isrc)+'" alt="'+esc(it.titulo_estrategico||it.titulo||'')+'" loading="lazy" decoding="async" width="560" height="315" style="width:100%;height:auto;display:block;aspect-ratio:16/9;object-fit:cover">';
+          var img=im.firstChild;
+          if(img&&img.addEventListener){img.addEventListener('error',function(){im.style.display='none';});}
+          im.style.display='block';
+        }
       })
       .catch(function(){});
   })();
